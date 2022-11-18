@@ -118,13 +118,24 @@ class _MyHomePageState extends State<MyHomePage> {
             '&apiKey=' +
             newsapi_key +
             '&sortBy=relevancy'));
+    print('https://newsapi.org/v2/top-headlines?country=' +
+        'IN' +
+        '&apiKey=' +
+        newsapi_key +
+        '&sortBy=relevancy');
     String jsonnews = response.body;
     news = jsonDecode(jsonnews);
     for (int i = 0; i < 5; i++) {
       url_data += [news['articles'][i]['url']];
       title_data += [news['articles'][i]['title']];
-      image_data += [news['articles'][i]['urlToImage']];
+      if(news['articles'][i]['urlToImage']!=null){
+        image_data += [news['articles'][i]['urlToImage']];
+      }else{
+        image_data += ['https://www.analyticdesign.com/wp-content/uploads/2018/07/unnamed-574x675.gif'];
+      }
+
     }
+    print(image_data);
     List<dynamic> newsdata = [url_data, title_data, image_data];
     return newsdata;
   }
@@ -245,7 +256,6 @@ class _MyHomePageState extends State<MyHomePage> {
                   return Center(child: CircularProgressIndicator());
                 } else {
                   final news = snapshot.data as List<dynamic>;
-                  print(news);
                   return Column(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
