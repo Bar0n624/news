@@ -142,10 +142,14 @@ class _MyHomePageState extends State<MyHomePage> {
           child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                Row(children:[
+                Row( mainAxisAlignment: MainAxisAlignment.center,
+                    children:[
+          SizedBox(
+          height: 50,
+              width: 300,
+                  child:
                   TextField(
                       style: TextStyle(color: Colors.white),
-                      keyboardType: TextInputType.number,
                       controller: myController,
                       decoration: InputDecoration(
                           border: OutlineInputBorder(),
@@ -157,7 +161,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             searchtext = text;
                           }
                         });
-                      }),
+                      }),),
                   ElevatedButton(onPressed: (){
                     Navigator.push(
                         context,
