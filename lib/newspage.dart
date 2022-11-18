@@ -25,7 +25,9 @@ class _newspageState extends State<newspage> {
   Future<List<dynamic>> getnews() async {
     final DateTime now = DateTime.now();
     final String year =  DateFormat('yyyy').format(now);
-    final String month =  (int.parse(DateFormat('mm').format(now))-1).toString();
+    print(DateFormat('MM').format(now));
+    final String month =  (int.parse(DateFormat('MM').format(now))-1).toString();
+    print(month);
     final String day= DateFormat('dd').format(now);
     final String date=year+'-'+month+'-'+day;
     var response;
@@ -36,7 +38,7 @@ class _newspageState extends State<newspage> {
     List<dynamic> image_data = [];
     String newsapi_key = 'ea9935cfc536478dabb3e120b106f258';
     response = await http.get(Uri.parse(
-        'https://newsapi.org/v2/everthing?q=' +
+        'https://newsapi.org/v2/everything?q=' +
             search.replaceAll(' ', '%20') +
             '&apiKey=' +
             newsapi_key +'&from='+date+
@@ -51,9 +53,13 @@ class _newspageState extends State<newspage> {
     for (int i = 0; i < len; i++) {
       url_data += [news['articles'][i]['url']];
       title_data += [news['articles'][i]['title']];
-      image_data += [news['articles'][i]['urlToImage']];
-    }
+      if(news['articles'][i]['urlToImage']!=null){
+        image_data += [news['articles'][i]['urlToImage']];
+      }else{
+        image_data += ['https://www.analyticdesign.com/wp-content/uploads/2018/07/unnamed-574x675.gif'];
+      }}
     List<dynamic> newsdata = [url_data, title_data, image_data];
+    print(newsdata);
     return newsdata;
   }
   Widget build(BuildContext context) {
