@@ -5,6 +5,8 @@ import 'package:hexcolor/hexcolor.dart';
 import 'package:http/http.dart' as http;
 import 'package:geolocator/geolocator.dart';
 import 'weather.dart';
+import 'package:carousel_slider/carousel_slider.dart';
+import 'package:carousel_slider/carousel_options.dart';
 
 void main() {
   runApp(const MyApp());
@@ -187,27 +189,53 @@ class _MyHomePageState extends State<MyHomePage> {
                   return Column(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
-                        Container(
-                          padding: EdgeInsets.all(30),
-                          decoration: ShapeDecoration(
-                              shape: StadiumBorder(), color: Colors.greenAccent),
-                          child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
                                             Text(
                                               '${news['articles'][0]['title']}',
                                               style: TextStyle(fontSize: 35),
                                             ),
                                             Text(
                                                 '${news['articles'][0]['url']}'
-                                            )
+                                            ),
+                        CarouselSlider(
+                          options: CarouselOptions(height:  300),
+                          items: ['lol','lol1','lol2','lol3','lol4'].map((i) {
+                            return Builder(
+                                builder : (BuildContext context) {
+                                  return Container(
+                                    width: MediaQuery.of(context).size.width,
+                                    margin : EdgeInsets.symmetric(horizontal: 5.0),
+
+                                    child: Column(
+                                      children: [
+                                        Image.asset(i),
+                                        SizedBox( height:  10,),
+                                        if(i == 'lol')
+                                          Text("lol1", style:  TextStyle( fontSize: 25, fontWeight: FontWeight.w800),),
+                                        if(i == 'lol1')
+                                          Text("lol2", style:  TextStyle( fontSize: 25, fontWeight: FontWeight.w800),),
+                                        if(i == 'lol2')
+                                          Text("lol3", style:  TextStyle( fontSize: 25, fontWeight: FontWeight.w800),),
+                                        if(i == 'lol3')
+                                          Text("lol4", style:  TextStyle( fontSize: 25, fontWeight: FontWeight.w800),),
+                                        if(i == 'lol4')
+                                          Text("lol5", style:  TextStyle( fontSize: 25, fontWeight: FontWeight.w800),),
+                                      ],
+                                    ),
+
+                                  );
+                                }
+                            );
+                          }).toList(),
+
+                        ),
                                           ],
-                        ),)
-                      ]);
+
+                      );
                 }
               },
               future: getnews(),
             ),
+
           ]
         )
 
