@@ -38,11 +38,6 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   Map<dynamic, dynamic> weather = {};
-  bool daynight() {
-    DateTime now = DateTime.now();
-    int hour = now.hour;
-    return (hour >= 6) && (hour <= 18);
-  }
 
   Future<Map<dynamic, dynamic>> getweather() async {
     bool serviceEnabled;
@@ -102,13 +97,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    bool ifday = daynight();
     Color bgcolor;
-    if (ifday) {
-      bgcolor = Colors.white;
-    } else {
-      bgcolor = Color(0xff1e212a);
-    }
+    bgcolor = Color(0xff1e212a);
     return Scaffold(
       backgroundColor: bgcolor,
       appBar: AppBar(
