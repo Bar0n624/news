@@ -31,7 +31,6 @@ class MyApp extends StatelessWidget {
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
 
-
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
@@ -43,7 +42,7 @@ class _MyHomePageState extends State<MyHomePage> {
     bool serviceEnabled;
     var position;
     var response;
-    String city_name='';
+    String city_name = '';
     LocationPermission permission;
 
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
@@ -61,18 +60,21 @@ class _MyHomePageState extends State<MyHomePage> {
 
     if (permission == LocationPermission.deniedForever) {
       city_name = 'bangalore';
-    }else{
-      position=await Geolocator.getCurrentPosition();
+    } else {
+      position = await Geolocator.getCurrentPosition();
     }
     print(position);
     print(position.latitude.toString());
     String weather_key = '56696014b1b0f79692a93ba0ec757061';
-    if (position!=null){
-      response = await http.get(Uri.https(
-          'api.openweathermap.org',
-          '/data/2.5/weather',
-          {'lat': position.latitude.toString(), 'lon': position.longitude.toString(),'appid':weather_key, 'units': 'metric'}));
-    }else{
+    if (position != null) {
+      response = await http
+          .get(Uri.https('api.openweathermap.org', '/data/2.5/weather', {
+        'lat': position.latitude.toString(),
+        'lon': position.longitude.toString(),
+        'appid': weather_key,
+        'units': 'metric'
+      }));
+    } else {
       response = await http.get(Uri.https(
           'api.openweathermap.org',
           '/data/2.5/weather',
@@ -83,16 +85,29 @@ class _MyHomePageState extends State<MyHomePage> {
     return weather;
   }
 
-  Future<Map<dynamic, dynamic>> getnews() async {
+  Future<List<dynamic>> getnews() async {
     var response;
-    int length;
     Map<dynamic, dynamic> news = {};
-    Map<dynamic, dynamic> newsstuff = {};
+
+    List<dynamic> url_data = [];
+    List<dynamic> title_data = [];
+    List<dynamic> image_data = [];
     String newsapi_key = 'ea9935cfc536478dabb3e120b106f258';
-    response = await http.get(Uri.parse('https://newsapi.org/v2/top-headlines?country='+'IN'+'&apiKey='+newsapi_key+'&sortBy=relevancy'));
+    response = await http.get(Uri.parse(
+        'https://newsapi.org/v2/top-headlines?country=' +
+            'IN' +
+            '&apiKey=' +
+            newsapi_key +
+            '&sortBy=relevancy'));
     String jsonnews = response.body;
     news = jsonDecode(jsonnews);
-    return news;
+    for (int i = 0; i < 5; i++) {
+      url_data += [news['articles'][i]['url']];
+      title_data += [news['articles'][i]['title']];
+      image_data += [news['articles'][i]['urlToImage']];
+    }
+    List<dynamic> newsdata = [url_data, title_data, image_data];
+    return newsdata;
   }
 
   @override
@@ -105,9 +120,9 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text('Weather App'),
       ),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
+          child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
             FutureBuilder(
               builder: (context, snapshot) {
                 if (!snapshot.hasData) {
@@ -118,41 +133,45 @@ class _MyHomePageState extends State<MyHomePage> {
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
                         GestureDetector(
-                          onTap: (){
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                builder: (context) => secondpage(weather: weather)));
-
-                          },
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          secondpage(weather: weather)));
+                            },
                             child: Container(
                               padding: EdgeInsets.all(30),
                               decoration: ShapeDecoration(
-                                  shape: StadiumBorder(), color: Colors.greenAccent),
+                                  shape: StadiumBorder(),
+                                  color: Colors.greenAccent),
                               child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
                                   children: [
                                     Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
                                       children: [
                                         Container(
                                             child: Row(
-                                              children: [
-                                                Text(
-                                                  '${weather['main']['temp']}°C',
-                                                  style: TextStyle(fontSize: 35),
-                                                ),
-                                                Image(
-                                                    image: AssetImage(
-                                                        'assets/${weather['weather'][0]['icon']}.png')),
-                                              ],
-                                            )),
+                                          children: [
+                                            Text(
+                                              '${weather['main']['temp']}°C',
+                                              style: TextStyle(fontSize: 35),
+                                            ),
+                                            Image(
+                                                image: AssetImage(
+                                                    'assets/${weather['weather'][0]['icon']}.png')),
+                                          ],
+                                        )),
                                         Text('${weather['weather'][0]['main']}',
                                             style: TextStyle(fontSize: 30)),
                                       ],
                                     ),
                                     Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
                                       children: [
                                         Text(
                                             'Min: ${weather['main']['temp_min']}°C',
@@ -163,8 +182,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                       ],
                                     )
                                   ]),
-                            )
-                        ),
+                            )),
                       ]);
                 }
               },
@@ -175,64 +193,86 @@ class _MyHomePageState extends State<MyHomePage> {
                 if (!snapshot.hasData) {
                   return Center(child: CircularProgressIndicator());
                 } else {
-                  final news = snapshot.data as Map<dynamic, dynamic>;
+                  final news = snapshot.data as List<dynamic>;
+                  print(news);
                   return Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                                            Text(
-                                              '${news['articles'][0]['title']}',
-                                              style: TextStyle(fontSize: 35),
-                                            ),
-                                            Text(
-                                                '${news['articles'][0]['url']}'
-                                            ),
-                        CarouselSlider(
-                          options: CarouselOptions(height:  300),
-                          items: ['lol','lol1','lol2','lol3','lol4'].map((i) {
-                            return Builder(
-                                builder : (BuildContext context) {
-                                  return Container(
-                                    width: MediaQuery.of(context).size.width,
-                                    margin : EdgeInsets.symmetric(horizontal: 5.0),
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      CarouselSlider(
+                          options: CarouselOptions(height: 300),
+                          items: [
+                            Container(
+                              margin: EdgeInsets.all(6.0),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(8.0),
+                                image: DecorationImage(
+                                  image: NetworkImage(news[2][0]),
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            ),
 
-                                    child: Column(
-                                      children: [
-                                        Image.asset(i),
-                                        SizedBox( height:  10,),
-                                        if(i == 'lol')
-                                          Text("lol1", style:  TextStyle( fontSize: 25, fontWeight: FontWeight.w800),),
-                                        if(i == 'lol1')
-                                          Text("lol2", style:  TextStyle( fontSize: 25, fontWeight: FontWeight.w800),),
-                                        if(i == 'lol2')
-                                          Text("lol3", style:  TextStyle( fontSize: 25, fontWeight: FontWeight.w800),),
-                                        if(i == 'lol3')
-                                          Text("lol4", style:  TextStyle( fontSize: 25, fontWeight: FontWeight.w800),),
-                                        if(i == 'lol4')
-                                          Text("lol5", style:  TextStyle( fontSize: 25, fontWeight: FontWeight.w800),),
-                                      ],
-                                    ),
+                            //2nd Image of Slider
+                            Container(
+                              margin: EdgeInsets.all(6.0),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(8.0),
+                                image: DecorationImage(
+                                  image: NetworkImage(news[2][1]),
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            ),
 
-                                  );
-                                }
-                            );
-                          }).toList(),
+                            //3rd Image of Slider
+                            Container(
+                              margin: EdgeInsets.all(6.0),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(8.0),
+                                image: DecorationImage(
+                                  image: NetworkImage(news[2][2]),
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            ),
 
-                        ),
-                                          ],
+                            //4th Image of Slider
+                            Container(
+                              margin: EdgeInsets.all(6.0),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(8.0),
+                                image: DecorationImage(
+                                  image: NetworkImage(news[2][3]),
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            ),
 
-                      );
+                            //5th Image of Slider
+                            Container(
+                              margin: EdgeInsets.all(6.0),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(8.0),
+                                image: DecorationImage(
+                                  image: NetworkImage(news[2][4]),
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                              child: Column(
+                                children: [
+                                  Text(news[1][4])
+                                ],
+                              ),
+                            ),
+                          ]),
+                    ],
+                  );
                 }
               },
               future: getnews(),
             ),
-
-          ]
-        )
-
-      ),
+          ])),
       // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
-
-
