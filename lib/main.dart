@@ -88,7 +88,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Future<Map<dynamic, dynamic>> getnews() async {
     var response;
+    int length;
     Map<dynamic, dynamic> news = {};
+    Map<dynamic, dynamic> newsstuff = {};
     String newsapi_key = 'ea9935cfc536478dabb3e120b106f258';
     response = await http.get(Uri.parse('https://newsapi.org/v2/top-headlines?country='+'IN'+'&apiKey='+newsapi_key+'&sortBy=relevancy'));
     String jsonnews = response.body;
@@ -112,6 +114,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: Center(
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             FutureBuilder(
               builder: (context, snapshot) {
@@ -213,3 +216,5 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 }
+
+
