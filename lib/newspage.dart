@@ -33,6 +33,7 @@ class _newspageState extends State<newspage> {
     var response;
     Map<dynamic, dynamic> news = {};
     int len;
+    List<int> stuff=[];
     List<dynamic> url_data = [];
     List<dynamic> title_data = [];
     List<dynamic> image_data = [];
@@ -51,6 +52,7 @@ class _newspageState extends State<newspage> {
       len=news.length;
     }
     for (int i = 0; i < len; i++) {
+      stuff+=[i];
       url_data += [news['articles'][i]['url']];
       title_data += [news['articles'][i]['title']];
       if(news['articles'][i]['urlToImage']!=null){
@@ -58,7 +60,7 @@ class _newspageState extends State<newspage> {
       }else{
         image_data += ['https://www.analyticdesign.com/wp-content/uploads/2018/07/unnamed-574x675.gif'];
       }}
-    List<dynamic> newsdata = [url_data, title_data, image_data];
+    List<dynamic> newsdata = [url_data, title_data, image_data, stuff];
     print(newsdata);
     return newsdata;
   }
@@ -86,73 +88,30 @@ class _newspageState extends State<newspage> {
                       return Column(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
-                          CarouselSlider(
-                              options: CarouselOptions(height: 300),
-                              items: [
-                                Container(
-                                  margin: EdgeInsets.all(6.0),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(8.0),
-                                    image: DecorationImage(
-                                      image: NetworkImage(news[2][0]),
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ),
-                                ),
-
-                                //2nd Image of Slider
-                                Container(
-                                  margin: EdgeInsets.all(6.0),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(8.0),
-                                    image: DecorationImage(
-                                      image: NetworkImage(news[2][1]),
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ),
-                                ),
-
-                                //3rd Image of Slider
-                                Container(
-                                  margin: EdgeInsets.all(6.0),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(8.0),
-                                    image: DecorationImage(
-                                      image: NetworkImage(news[2][2]),
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ),
-                                ),
-
-                                //4th Image of Slider
-                                Container(
-                                  margin: EdgeInsets.all(6.0),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(8.0),
-                                    image: DecorationImage(
-                                      image: NetworkImage(news[2][3]),
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ),
-                                ),
-
-                                //5th Image of Slider
-                                Container(
-                                  margin: EdgeInsets.all(6.0),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(8.0),
-                                    image: DecorationImage(
-                                      image: NetworkImage(news[2][4]),
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ),
-                                  child: Column(
-                                    children: [
-                                      Text(news[1][4])
-                                    ],
-                                  ),
-                                ),
-                              ]),
+                          SizedBox(height: 500, width: 400, child: CarouselSlider(
+                              options: CarouselOptions(height: 500),
+                              items: (news[3]).map<Widget>((i){
+                                return Builder(
+                                    builder: (BuildContext context){
+                                      return Container(
+                                        margin: EdgeInsets.all(6.0),
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(8.0),
+                                          image: DecorationImage(
+                                            image: NetworkImage(news[2][i]),
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
+                                        child: Column(
+                                          children: [
+                                            Text(news[1][i])
+                                          ],
+                                        ),
+                                      );
+                                    }
+                                );
+                              }).toList()))
+                          ,
                         ],
                       );
                     }
