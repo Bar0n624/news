@@ -7,6 +7,7 @@ import 'package:geolocator/geolocator.dart';
 import 'weather.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:carousel_slider/carousel_options.dart';
+import 'newspage.dart';
 
 void main() {
   runApp(const MyApp());
@@ -37,6 +38,24 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   Map<dynamic, dynamic> weather = {};
+  String searchtext='';
+  final myController = TextEditingController();
+  @override
+  void textdispose() {
+    myController.dispose();
+    super.dispose();
+  }
+
+  void textsetValue() {
+    searchtext = myController.text;
+  }
+
+  void heightinitState() {
+    super.initState();
+
+    // Start listening to changes.
+    myController.addListener(textsetValue);
+  }
 
   Future<Map<dynamic, dynamic>> getweather() async {
     bool serviceEnabled;
@@ -123,6 +142,34 @@ class _MyHomePageState extends State<MyHomePage> {
           child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
+                Row(children:[
+                  TextField(
+                      style: TextStyle(color: Colors.white),
+                      keyboardType: TextInputType.number,
+                      controller: myController,
+                      decoration: InputDecoration(
+                          border: OutlineInputBorder(),
+                          hintStyle: TextStyle(color: Colors.white),
+                          hintText: 'Search'),
+                      onChanged: (text) {
+                        setState(() {
+                          {
+                            searchtext = text;
+                          }
+                        });
+                      }),
+                  ElevatedButton(onPressed: (){
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                newspage(search: searchtext)));
+                  }, child: Icon(
+                    Icons.search,
+                    color: Colors.white,
+                  ))
+                ]),
+
             FutureBuilder(
               builder: (context, snapshot) {
                 if (!snapshot.hasData) {
