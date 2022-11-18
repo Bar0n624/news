@@ -28,9 +28,10 @@ class _secondpageState extends State<secondpage> {
       ),
       body: Center(
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       Container(
                         padding: EdgeInsets.all(30),

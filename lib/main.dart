@@ -122,118 +122,54 @@ class _MyHomePageState extends State<MyHomePage> {
                   return Column(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
-                        Container(
-                          padding: EdgeInsets.all(30),
-                          decoration: ShapeDecoration(
-                              shape: StadiumBorder(), color: Colors.greenAccent),
-                          child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                Row(
+                        GestureDetector(
+                          onTap: (){
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                builder: (context) => secondpage(weather: weather)));
+
+                          },
+                            child: Container(
+                              padding: EdgeInsets.all(30),
+                              decoration: ShapeDecoration(
+                                  shape: StadiumBorder(), color: Colors.greenAccent),
+                              child: Column(
                                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                   children: [
-                                    Container(
-                                        child: Row(
-                                          children: [
-                                            Text(
-                                              '${weather['main']['temp']}°C',
-                                              style: TextStyle(fontSize: 35),
-                                            ),
-                                            Image(
-                                                image: AssetImage(
-                                                    'assets/${weather['weather'][0]['icon']}.png')),
-                                          ],
-                                        )),
-                                    Text('${weather['weather'][0]['main']}',
-                                        style: TextStyle(fontSize: 30)),
-                                  ],
-                                ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    Text(
-                                        'Min: ${weather['main']['temp_min']}°C',
-                                        style: TextStyle(fontSize: 18)),
-                                    Text(
-                                        'Max: ${weather['main']['temp_max']}°C',
-                                        style: TextStyle(fontSize: 18))
-                                  ],
-                                )
-                              ]),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                      children: [
+                                        Container(
+                                            child: Row(
+                                              children: [
+                                                Text(
+                                                  '${weather['main']['temp']}°C',
+                                                  style: TextStyle(fontSize: 35),
+                                                ),
+                                                Image(
+                                                    image: AssetImage(
+                                                        'assets/${weather['weather'][0]['icon']}.png')),
+                                              ],
+                                            )),
+                                        Text('${weather['weather'][0]['main']}',
+                                            style: TextStyle(fontSize: 30)),
+                                      ],
+                                    ),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                      children: [
+                                        Text(
+                                            'Min: ${weather['main']['temp_min']}°C',
+                                            style: TextStyle(fontSize: 18)),
+                                        Text(
+                                            'Max: ${weather['main']['temp_max']}°C',
+                                            style: TextStyle(fontSize: 18))
+                                      ],
+                                    )
+                                  ]),
+                            )
                         ),
-                        Container(
-                          height: 300,
-                          padding: EdgeInsets.all(30),
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.only(
-                                  topRight: Radius.circular(40.0),
-                                  bottomRight: Radius.circular(40.0),
-                                  topLeft: Radius.circular(40.0),
-                                  bottomLeft: Radius.circular(40.0)),
-                              color: HexColor('#4C4f69').withOpacity(0.7)),
-                          child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                Row(
-                                    mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                          'Humidity: ${weather['main']['humidity']}%',
-                                          style: TextStyle(
-                                              fontSize: 18, color: Colors.white)),
-                                      Text(
-                                          'Wind: ${(weather['wind']['speed'] * 180 / 5).round() / 10} km/h',
-                                          style: TextStyle(
-                                              fontSize: 18, color: Colors.white))
-                                    ]),
-                                Row(
-                                    mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                          'Pressure: ${weather['main']['pressure']} hPa',
-                                          style: TextStyle(
-                                              fontSize: 18, color: Colors.white)),
-                                      Text(
-                                          'Wind: ${weather['wind']['deg']} °',
-                                          style: TextStyle(
-                                              fontSize: 18, color: Colors.white))
-                                    ]),
-                                Row(
-                                    mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                          'Sunrise: ${DateTime.fromMillisecondsSinceEpoch(weather['sys']['sunrise']*1000).hour}:${DateTime.fromMillisecondsSinceEpoch(weather['sys']['sunrise']*1000).minute}',
-                                          style: TextStyle(
-                                              fontSize: 18, color: Colors.white)),
-                                      Text(
-                                          'Sunset: ${DateTime.fromMillisecondsSinceEpoch(weather['sys']['sunset']*1000).hour}:${DateTime.fromMillisecondsSinceEpoch(weather['sys']['sunset']*1000).minute}',
-                                          style: TextStyle(
-                                              fontSize: 18, color: Colors.white))
-                                    ]),
-                              ]),
-                        ),
-                        ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              shape: StadiumBorder(),
-                              padding: EdgeInsets.all(20),
-                              backgroundColor: Colors.blue,
-                              foregroundColor: Colors.white,
-                            ),
-                            onPressed: () {
-                              setState(() {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (BuildContext context) =>
-                                            secondpage(
-                                                weather: weather
-                                            )));
-                              });
-                            },
-                            child: Text('MORE')),
                       ]);
                 }
               },
@@ -255,38 +191,15 @@ class _MyHomePageState extends State<MyHomePage> {
                           child: Column(
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    Container(
-                                        child: Row(
-                                          children: [
                                             Text(
                                               '${news['articles'][0]['title']}',
                                               style: TextStyle(fontSize: 35),
                                             ),
-                                            Image(
-                                                image: AssetImage(
-                                                    'assets/${weather['weather'][0]['icon']}.png')),
+                                            Text(
+                                                '${news['articles'][0]['url']}'
+                                            )
                                           ],
-                                        )),
-                                    Text('${weather['weather'][0]['main']}',
-                                        style: TextStyle(fontSize: 30)),
-                                  ],
-                                ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    Text(
-                                        'Min: ${weather['main']['temp_min']}°C',
-                                        style: TextStyle(fontSize: 18)),
-                                    Text(
-                                        'Max: ${weather['main']['temp_max']}°C',
-                                        style: TextStyle(fontSize: 18))
-                                  ],
-                                )
-                              ]),
-                        ),
+                        ),)
                       ]);
                 }
               },
