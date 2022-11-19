@@ -160,6 +160,7 @@ class _MyHomePageState extends State<MyHomePage> {
     Color bgcolor;
     bgcolor = Color(0xff1e212a);
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: bgcolor,
       appBar: AppBar(
         title: Text('Weather App'),
