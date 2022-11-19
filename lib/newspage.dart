@@ -8,6 +8,7 @@ import 'weather.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:carousel_slider/carousel_options.dart';
 import 'package:intl/intl.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class newspage extends StatefulWidget {
   final String search;
@@ -22,6 +23,13 @@ class _newspageState extends State<newspage> {
   final String search;
   _newspageState(this.search);
   @override
+  _launchURL(url) async {
+    if (await canLaunchUrl(Uri.parse(url))) {
+      await launch(url, forceWebView: true);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
   Future<List<dynamic>> getnews() async {
     final DateTime now = DateTime.now();
     final String year =  DateFormat('yyyy').format(now);
@@ -46,10 +54,10 @@ class _newspageState extends State<newspage> {
             '&sortBy=relevancy'));
     String jsonnews = response.body;
     news = jsonDecode(jsonnews);
-    if (news.length>5){
-      len=5;
+    if (news['articles'].length>10){
+      len=10;
     } else {
-      len=news.length;
+      len=news['articles'].length;
     }
     for (int i = 0; i < len; i++) {
       stuff+=[i];
@@ -88,29 +96,36 @@ class _newspageState extends State<newspage> {
                       return Column(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
-                          SizedBox(height: 500, width: 400, child: CarouselSlider(
-                              options: CarouselOptions(height: 500),
-                              items: (news[3]).map<Widget>((i){
-                                return Builder(
-                                    builder: (BuildContext context){
-                                      return Container(
-                                        margin: EdgeInsets.all(6.0),
-                                        decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(8.0),
-                                          image: DecorationImage(
-                                            image: NetworkImage(news[2][i]),
-                                            fit: BoxFit.cover,
-                                          ),
+                          SizedBox(height: 400, width: 400, child: CarouselSlider(
+                          options: CarouselOptions(height: 400),
+                          items: (news[3]).map<Widget>((i){
+                            return Builder(
+                                builder: (BuildContext context){
+                                  return GestureDetector(
+                                    child: Container(
+                                      child: Text(news[1][i],
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          backgroundColor: Colors.white,
+
+                                        ),),
+                                      margin: EdgeInsets.all(6.0),
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(8.0),
+                                        image: DecorationImage(
+                                          image: NetworkImage(news[2][i]),
+                                          fit: BoxFit.cover,
                                         ),
-                                        child: Column(
-                                          children: [
-                                            Text(news[1][i])
-                                          ],
-                                        ),
-                                      );
-                                    }
-                                );
-                              }).toList()))
+                                      ),
+                                    ),
+                                    onTap: (){_launchURL(news[0][i]);},
+
+
+                                  );
+
+                                }
+                            );
+                          }).toList()))
                           ,
                         ],
                       );

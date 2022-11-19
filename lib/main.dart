@@ -8,6 +8,7 @@ import 'weather.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:carousel_slider/carousel_options.dart';
 import 'newspage.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 void main() {
   runApp(const MyApp());
@@ -55,6 +56,13 @@ class _MyHomePageState extends State<MyHomePage> {
 
     // Start listening to changes.
     myController.addListener(textsetValue);
+  }
+  _launchURL(url) async {
+    if (await canLaunchUrl(Uri.parse(url))) {
+      await launch(url, forceWebView: true);
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 
   Future<Map<dynamic, dynamic>> getweather() async {
@@ -107,7 +115,8 @@ class _MyHomePageState extends State<MyHomePage> {
   Future<List<dynamic>> getnews() async {
     var response;
     Map<dynamic, dynamic> news = {};
-
+    int len;
+    List<int> stuff=[];
     List<dynamic> url_data = [];
     List<dynamic> title_data = [];
     List<dynamic> image_data = [];
@@ -125,9 +134,15 @@ class _MyHomePageState extends State<MyHomePage> {
         '&sortBy=relevancy');
     String jsonnews = response.body;
     news = jsonDecode(jsonnews);
-    for (int i = 0; i < 5; i++) {
+    if (news['articles'].length>10){
+      len=10;
+    } else {
+      len=news['articles'].length;
+    }
+    for (int i = 0; i < len; i++) {
       url_data += [news['articles'][i]['url']];
       title_data += [news['articles'][i]['title']];
+      stuff+=[i];
       if(news['articles'][i]['urlToImage']!=null){
         image_data += [news['articles'][i]['urlToImage']];
       }else{
@@ -136,7 +151,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
     }
     print(image_data);
-    List<dynamic> newsdata = [url_data, title_data, image_data];
+    List<dynamic> newsdata = [url_data, title_data, image_data, stuff];
     return newsdata;
   }
 
@@ -259,73 +274,36 @@ class _MyHomePageState extends State<MyHomePage> {
                   return Column(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      CarouselSlider(
-                          options: CarouselOptions(height: 300),
-                          items: [
-                            Container(
-                              margin: EdgeInsets.all(6.0),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(8.0),
-                                image: DecorationImage(
-                                  image: NetworkImage(news[2][0]),
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                            ),
+                      SizedBox(height: 400, width: 400, child: CarouselSlider(
+                          options: CarouselOptions(height: 400),
+                          items: (news[3]).map<Widget>((i){
+                            return Builder(
+                                builder: (BuildContext context){
+                                  return GestureDetector(
+                                      child: Container(
+                                              child: Text(news[1][i],
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                    backgroundColor: Colors.white,
 
-                            //2nd Image of Slider
-                            Container(
-                              margin: EdgeInsets.all(6.0),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(8.0),
-                                image: DecorationImage(
-                                  image: NetworkImage(news[2][1]),
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                            ),
+                                              ),),
+                                              margin: EdgeInsets.all(6.0),
+                                              decoration: BoxDecoration(
+                                                borderRadius: BorderRadius.circular(8.0),
+                                                image: DecorationImage(
+                                                  image: NetworkImage(news[2][i]),
+                                                  fit: BoxFit.cover,
+                                                ),
+                                              ),
+                                            ),
+                                    onTap: (){_launchURL(news[0][i]);},
 
-                            //3rd Image of Slider
-                            Container(
-                              margin: EdgeInsets.all(6.0),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(8.0),
-                                image: DecorationImage(
-                                  image: NetworkImage(news[2][2]),
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                            ),
 
-                            //4th Image of Slider
-                            Container(
-                              margin: EdgeInsets.all(6.0),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(8.0),
-                                image: DecorationImage(
-                                  image: NetworkImage(news[2][3]),
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                            ),
+                                          );
 
-                            //5th Image of Slider
-                            Container(
-                              margin: EdgeInsets.all(6.0),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(8.0),
-                                image: DecorationImage(
-                                  image: NetworkImage(news[2][4]),
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                              child: Column(
-                                children: [
-                                  Text(news[1][4])
-                                ],
-                              ),
-                            ),
-                          ]),
+                                }
+                            );
+                          }).toList())),
                     ],
                   );
                 }
